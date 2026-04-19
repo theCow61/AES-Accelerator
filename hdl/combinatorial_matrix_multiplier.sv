@@ -2,6 +2,10 @@
 // combinatorial and should all the macs should be parallelized
 // pipeline if needed
 
+
+// 2.39 ns worse total delay I found for this combinatorial piece isolated
+// not necessary to pipeline as of now
+
 module combinatorial_matrix_multiplier (
   input [127:0] matrix_in,
   output [127:0] product_matrix
