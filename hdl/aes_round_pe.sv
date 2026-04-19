@@ -1,0 +1,50 @@
+
+
+module aes_round_pe #(parameter MIX_COLUMNS = 1) (
+  input aes_matrix_t state_in,
+  input aes_matrix_t round_key,
+  output aes_matrix_t state_out
+);
+
+wire aes_matrix_t shifted_and_substituted;
+
+
+wire aes_matrix_t column_mixed;
+
+combinatorial_matrix_multiplier column_mixer (
+  .matrix_in (shifted_and_substituted),
+  .product_matrix (column_mixed)
+);
+
+// MIX_COLUMNS evaluation should be compile time
+assign state_out = MIX_COLUMNS ? column_mixed ^ round_key : shifted_and_substituted ^ round_key;
+
+// S_BOX_TABLE ROM lookup might need to be pipelined
+
+// first row has no subsitution (column major matrix)
+assign shifted_and_substituted[0][0] = S_BOX_TABLE[shifted_and_substitued[0][0]];
+assign shifted_and_substituted[1][0] = S_BOX_TABLE[shifted_and_substitued[1][0]];
+assign shifted_and_substituted[2][0] = S_BOX_TABLE[shifted_and_substitued[2][0]];
+assign shifted_and_substituted[3][0] = S_BOX_TABLE[shifted_and_substitued[3][0]];
+
+// second row
+assign shifted_and_substituted[0][1] = S_BOX_TABLE[shifted_and_substitued[1][1]];
+assign shifted_and_substituted[1][1] = S_BOX_TABLE[shifted_and_substitued[2][1]];
+assign shifted_and_substituted[2][1] = S_BOX_TABLE[shifted_and_substitued[3][1]];
+assign shifted_and_substituted[3][1] = S_BOX_TABLE[shifted_and_substitued[0][1]];
+
+// third row
+assign shifted_and_substituted[0][2] = S_BOX_TABLE[shifted_and_substitued[2][2]];
+assign shifted_and_substituted[1][2] = S_BOX_TABLE[shifted_and_substitued[3][2]];
+assign shifted_and_substituted[2][2] = S_BOX_TABLE[shifted_and_substitued[0][2]];
+assign shifted_and_substituted[3][2] = S_BOX_TABLE[shifted_and_substitued[1][2]];
+
+// fourth row
+assign shifted_and_substituted[0][3] = S_BOX_TABLE[shifted_and_substitued[3][3]];
+assign shifted_and_substituted[1][3] = S_BOX_TABLE[shifted_and_substitued[0][3]];
+assign shifted_and_substituted[2][3] = S_BOX_TABLE[shifted_and_substitued[1][3]];
+assign shifted_and_substituted[3][3] = S_BOX_TABLE[shifted_and_substitued[2][3]];
+
+
+endmodule
+

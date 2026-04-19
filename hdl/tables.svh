@@ -1,4 +1,6 @@
 
+// treat as column-major [col, row]
+typedef logic [3:0][3:0][7:0] aes_matrix_t;
 
 parameter logic [7:0] S_BOX_TABLE [16*16] = .{
   'h63, 'h7c, 'h77, 'h7b, 'hf2, 'h6b, 'h6f, 'hc5, 'h30, 'h01, 'h67, 'h2b, 'hfe, 'hd7, 'hab, 'h76,
@@ -20,3 +22,4 @@ parameter logic [7:0] S_BOX_TABLE [16*16] = .{
 };
 
 parameter logic [7:0] ROUND_G_CONSTANTS [11] = '{ 'h0, 'h1, 'h2, 'h4, 'h8, 'h10, 'h20, 'h40, 'h80, 'h1b, 'h36 };
+
