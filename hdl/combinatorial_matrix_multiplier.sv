@@ -1,3 +1,4 @@
+`include "tables.svh"
 
 // combinatorial and should all the macs should be parallelized
 // pipeline if needed
