@@ -11,16 +11,16 @@ module key_expansion (
   input clk,
   input rst,
   input start_key_expansion,
-  input [127:0] key,
+  input aes_matrix_t key,
   input [3:0] round,
-  output [127:0] round_key
+  output aes_matrix_t round_key
 );
 
+aes_matrix_t expanded_keys [11];
 
-reg [127:0] expanded_keys [0:10];
 
-reg [4:0] round_counter_previous;
-reg [4:0] round_counter; // so to not use an adder
+reg [3:0] round_counter_previous;
+reg [3:0] round_counter; // so to not use an adder
 
 // combinatorial.
 assign round_key = expanded_keys[round];
@@ -31,6 +31,22 @@ typedef enum logic [1:0] {
 } key_expansion_state_t;
 
 key_expansion_state_t state;
+
+function logic [31:0] g_of_column(input logic [31:0] column, input logic [3:0] g_round);
+  return { S_BOX_TABLE[column[7:0]], S_BOX_TABLE[column[31:24]], S_BOX_TABLE[column[23:16]], S_BOX_TABLE[15:8] ^ ROUND_G_CONSTANTS[g_round] };
+endfunction
+
+function aes_matrix_t expand_key(input aes_matrix_t previous, input logic [3:0] g_round);
+  logic [31:0] g_last_column = g_of_column(previous[3], g_round);
+
+  // maybe pipeline this
+  logic [31:0] new_column_1 = previous[0] ^ g_last_column;
+  logic [31:0] new_column_2 = previous[1] ^ new_column_1;
+  logic [31:0] new_column_3 = previous[2] ^ new_column_2;
+  logic [31:0] new_column_4 = previous[3] ^ new_column_3;
+
+  return { new_column_4, new_column_3, new_column_2, new_column_1 };
+endfunction
 
 
 always @(posedge clk) begin
@@ -53,23 +69,9 @@ always @(posedge clk) begin
         end
       end
       ROUND_KEY_GENERATION: begin
-
-        // temps
-        logic [31:0] last_column = expanded_keys[round_counter_previous][127:96];
-        logic [31:0] g_last_column = { S_BOX_TABLE[last_column[7:0]], S_BOX_TABLE[last_column[31:24]], S_BOX_TABLE[last_column[23:16]], S_BOX_TABLE[last_column[15:8]] ^ ROUND_G_CONSTANTS[round_counter_previous] };
-
-        // maybe pipeline this
-        logic [31:0] new_column_1 = expanded_keys[round_counter_previous][31:0] ^ g_last_column;
-        logic [31:0] new_column_2 = expanded_keys[round_counter_previous][63:32] ^ new_column_1;
-        logic [31:0] new_column_3 = expanded_keys[round_counter_previous][95:64] ^ new_column_2;
-        logic [31:0] new_column_4 = expanded_keys[round_counter_previous][127:96] ^ new_column_3;
+        expanded_keys[round_counter] <= expand_key(expanded_keys[round_counter_previous], round_counter_previous);
 
         // don't let this be an adder. use two counters if needed
-        expanded_keys[round_counter][31:0] <= new_column_1;
-        expanded_keys[round_counter][63:32] <= new_column_2;
-        expanded_keys[round_counter][95:64] <= new_column_3;
-        expanded_keys[round_counter][127:96] <= new_column_4;
-
         round_counter_previous <= round_counter_previous + 1;
         round_counter <= round_counter + 1;
 
