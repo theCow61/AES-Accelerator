@@ -22,7 +22,7 @@ aes_matrix_t expanded_keys [11];
 reg [3:0] round_counter_previous;
 reg [3:0] round_counter; // so to not use an adder
 
-// combinatorial.
+// combinatorial. maybe have registers to reduce delay
 assign round_key = expanded_keys[round];
 
 typedef enum logic [1:0] {
