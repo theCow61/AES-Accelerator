@@ -13,11 +13,13 @@ module key_expansion (
   input start_key_expansion,
   input aes_matrix_t key,
   input [3:0] round,
-  output aes_matrix_t round_key
+  output aes_matrix_t round_key,
+  output aes_matrix_t founding_key
 );
 
 aes_matrix_t expanded_keys [11];
 
+assign founding_key = extended_keys[0];
 
 reg [3:0] round_counter_previous;
 reg [3:0] round_counter; // so to not use an adder
