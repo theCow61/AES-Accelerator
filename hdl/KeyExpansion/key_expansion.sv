@@ -57,7 +57,7 @@ always @(posedge clk) begin
   end
   else begin
 
-    case (state) begin
+    case (state)
       IDLE: begin
         if (start_key_expansion) begin
           // don't hardwire expanded_keys[0] to the key as the key may change
