@@ -62,6 +62,12 @@ void aes_print_block(aes_block_t* block) {
   }
 }
 
+void aes_print_block_ordered(aes_block_t* block) {
+  for (int i = 0; i < sizeof(aes_block_t); i++) {
+    printf("%02X\n", block->data[i]);
+  }
+}
+
 uint32_t aes_g_function(uint32_t last_word_of_expanded_key, int round_iteration) {
 
   uint8_t byte0 = last_word_of_expanded_key;
@@ -219,6 +225,12 @@ void aes_encrypt_block(aes_block_t* data, aes_block_t* key) {
 
   aes_key_expansion(&expanded_keys, key);
 
+  printf("Expanded keys:\n");
+  for (int i = 0; i < 11; i++) {
+    printf("Key %d:\n", i);
+    aes_print_block_ordered(&expanded_keys.expanded_keys[i]);
+  }
+
   aes_add_round_key(data, expanded_keys.expanded_keys[0]);
 
   for (int i = 1; i < 10; i++) {
@@ -241,6 +253,11 @@ int main() {
   char text_str[] = "hello hellohello";
   char key_str[] = "aaa aaa aaa aaaa";
 
+  printf("Plain text block\n");
+  aes_print_block_ordered(text_str);
+
+  printf("Key block\n");
+  aes_print_block_ordered(key_str);
 
   aes_block_t key = {0};
   aes_block_t inout = {0};
@@ -253,5 +270,8 @@ int main() {
   aes_encrypt_block(&inout, &key);
 
   aes_print_block(&inout);
+  printf("Result\n");
+  aes_print_block_ordered(&inout);
+
   return 0;
 }
