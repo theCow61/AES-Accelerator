@@ -47,9 +47,15 @@ assign key_select = pipeline_startup_counter;
 
 reg filling_up;
 
+// fill up needs to be ahead of rounding
+// instead of having a seperate parallel bus for founding key, just allow
+// the key expansion to be ahead maybe a little more. this extra latency
+// might not matter if we assume the key being set into register and the
+// start of streaming data has a couple cycle inbetween anyways.
+// this may be better than the routing impact of the founding key being routed
 always @(posedge clk) begin
   if (rst) begin
-    pipeline_startup_counter <= 1;
+    pipeline_startup_counter <= 0;
     filling_up <= 0;
   end
   else begin
@@ -108,7 +114,7 @@ always @(posedge clk) begin
       parallel_status_pipeline[9] <= parallel_status_pipeline[8];
       parallel_status_pipeline[10] <= parallel_status_pipeline[9];
 
-      in_states[0] <= data_matrix_in ^ founding_key;
+      in_states[0] <= data_matrix_in ^ round_keys[0];
       in_states[1] <= out_states[0];
       in_states[2] <= out_states[1];
       in_states[3] <= out_states[2];
