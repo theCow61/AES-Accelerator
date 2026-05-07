@@ -14,7 +14,7 @@ module key_expansion (
   input aes_matrix_t key,
   output key_consumed,
   input [3:0] round,
-  output aes_matrix_t round_key,
+  output aes_matrix_t round_key
 );
 
 aes_matrix_t expanded_keys [11];
@@ -27,13 +27,13 @@ assign round_key = expanded_keys[round];
 
 typedef enum logic [1:0] {
   IDLE,
-  ROUND_KEY_GENERATION,
+  ROUND_KEY_GENERATION
 } key_expansion_state_t;
 
 key_expansion_state_t state;
 
 function logic [31:0] g_of_column(input logic [31:0] column, input logic [3:0] g_round);
-  return { S_BOX_TABLE[column[7:0]], S_BOX_TABLE[column[31:24]], S_BOX_TABLE[column[23:16]], S_BOX_TABLE[15:8] ^ ROUND_G_CONSTANTS[g_round] };
+  return { S_BOX_TABLE[column[7:0]], S_BOX_TABLE[column[31:24]], S_BOX_TABLE[column[23:16]], S_BOX_TABLE[column[15:8]] ^ ROUND_G_CONSTANTS[g_round] };
 endfunction
 
 function aes_matrix_t expand_key(input aes_matrix_t previous, input logic [3:0] g_round);
