@@ -27,6 +27,10 @@ wire rounder_new_key;
 wire rounder_key_taken;
 wire rounder_update_coming;
 
+// needs to be cleared once update is registered
+reg key_change_pending_key_expansion;
+reg key_change_pending_rounder;
+
 key_expansion keys (
   .clk (clk),
   .rst (rst),
@@ -55,9 +59,7 @@ aes_rounder rounder_1 (
   .write_tready (write_tready)
 );
 
-// needs to be cleared once update is registered
-reg key_change_pending_key_expansion;
-reg key_change_pending_rounder;
+
 assign rounder_update_coming = key_change_pending_key_expansion; // having key expander have a ready signal may be a better way of expressing a lot of this stuff
 
 always @(posedge clk) begin

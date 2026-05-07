@@ -23,6 +23,6 @@ parameter logic [7:0] S_BOX_TABLE [16*16] = {
   'h8c,	'ha1, 'h89,	'h0d,	'hbf,	'he6, 'h42,	'h68,	'h41,	'h99,	'h2d,	'h0f,	'hb0,	'h54,	'hbb,	'h16
 };
 
-parameter logic [7:0] ROUND_G_CONSTANTS [11] = '{ 'h0, 'h1, 'h2, 'h4, 'h8, 'h10, 'h20, 'h40, 'h80, 'h1b, 'h36 };
+parameter logic [7:0] ROUND_G_CONSTANTS [10] = '{ 'h1, 'h2, 'h4, 'h8, 'h10, 'h20, 'h40, 'h80, 'h1b, 'h36 };
 
 `endif

@@ -6,6 +6,7 @@
 // round key of round n should be ready in n cycles. mind the timing instead
 // of implementing logic for stalling or giving status.
 
+`include "tables.svh"
 
 module key_expansion (
   input clk,
@@ -32,11 +33,11 @@ typedef enum logic [1:0] {
 
 key_expansion_state_t state;
 
-function logic [31:0] g_of_column(input logic [31:0] column, input logic [3:0] g_round);
+function automatic logic [31:0] g_of_column(input logic [31:0] column, input logic [3:0] g_round);
   return { S_BOX_TABLE[column[7:0]], S_BOX_TABLE[column[31:24]], S_BOX_TABLE[column[23:16]], S_BOX_TABLE[column[15:8]] ^ ROUND_G_CONSTANTS[g_round] };
 endfunction
 
-function aes_matrix_t expand_key(input aes_matrix_t previous, input logic [3:0] g_round);
+function automatic aes_matrix_t expand_key(input aes_matrix_t previous, input logic [3:0] g_round);
   logic [31:0] g_last_column = g_of_column(previous[3], g_round);
 
   // maybe pipeline this

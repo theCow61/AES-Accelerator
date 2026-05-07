@@ -1,15 +1,20 @@
 
+`include "tables.svh"
+
 module tb_key_expansion (
 );
 
 reg clk;
 reg rst;
 reg start;
-byte main_key [16];
+aes_matrix_t main_key;
 byte keys [11][16];
-reg round_idx;
+aes_matrix_t keys_casted [11]; // cant do direct cast because of how it orders it
+reg [3:0] round_idx;
 
-byte dut_round_key [16];
+typedef byte byte_array_t [16];
+aes_matrix_t dut_round_key;
+
 
 key_expansion DUT (
   .clk (clk),
@@ -27,22 +32,27 @@ always #5 clk = ~clk; // period of 10
 
 initial begin
   rst = 1;
-  main_key = 0;
+  main_key = '{default: 0};
   round_idx = 0;
   #33; // a little offset to reduce ambiguity in waveforms
   rst = 0;
   #10;
 
-  $readmemh("test1/expanded_keys", keys);
+  $readmemh("expanded_keys", keys);
+  
+  for (int i = 0; i < 11; i = i + 1) begin
+    keys_casted[i] = { << byte {keys[i]}};
+  end
 
-  main_key = keys[0]; // have key and start on same cycle
+  main_key = keys_casted[0]; // have key and start on same cycle
+  $display("%X", aes_matrix_t'(main_key));
   start = 1;
   #10;
-  main_key = 0; // remove key to make sure it's not dependent on it
+  main_key = '{default: 0}; // remove key to make sure it's not dependent on it
   round_idx = 0;
   start = 0;
   // test founding key is correct
-  if (dut_round_key == keys[0]) begin
+  if (dut_round_key == keys_casted[0]) begin
     $display("Founding key good.");
   end
   else
@@ -52,14 +62,16 @@ initial begin
 
   for (int i = 1; i < 11; i = i + 1) begin
     round_idx = i;
-    if (dut_round_key == keys[i])
+    #0;
+    if (dut_round_key == keys_casted[i])
       $display("Expanded key %d good.", i);
     else
       $display("Fail: Expanded key %d.", i);
 
     #10;
   end
-
+  
+  $finish();
 end
 
 endmodule
