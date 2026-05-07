@@ -12,7 +12,6 @@ byte keys [11][16];
 aes_matrix_t keys_casted [11]; // cant do direct cast because of how it orders it
 reg [3:0] round_idx;
 
-typedef byte byte_array_t [16];
 aes_matrix_t dut_round_key;
 
 
@@ -45,7 +44,6 @@ initial begin
   end
 
   main_key = keys_casted[0]; // have key and start on same cycle
-  $display("%X", aes_matrix_t'(main_key));
   start = 1;
   #10;
   main_key = '{default: 0}; // remove key to make sure it's not dependent on it
