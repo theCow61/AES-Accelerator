@@ -12,6 +12,7 @@ module key_expansion (
   input rst,
   input start_key_expansion,
   input aes_matrix_t key,
+  output key_consumed,
   input [3:0] round,
   output aes_matrix_t round_key,
 );
@@ -48,14 +49,19 @@ function aes_matrix_t expand_key(input aes_matrix_t previous, input logic [3:0] 
 endfunction
 
 
+reg key_taken;
+assign key_consumed = key_taken;
+
 always @(posedge clk) begin
   if (rst) begin
+    key_taken <= 0;
     round_counter_previous <= 0;
     round_counter <= 1;
     state <= IDLE;
   end
   else begin
 
+    key_taken <= 0;
     case (state)
       IDLE: begin
         if (start_key_expansion) begin
@@ -65,6 +71,7 @@ always @(posedge clk) begin
           state <= ROUND_KEY_GENERATION;
           round_counter_previous <= 0;
           round_counter <= 1;
+          key_taken <= 1;
         end
       end
       ROUND_KEY_GENERATION: begin
