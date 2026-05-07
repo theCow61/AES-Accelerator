@@ -3,19 +3,20 @@
 module aes_rounder (
   input clk,
   input rst,
-  input start,
-  input aes_matrix_t data_matrix_in,
-  input aes_matrix_t founding_key,
   input aes_matrix_t key_matrix,
   output [3:0] key_select, // as pipeline fills up, get the keys. This instead of a mess of interconnect. Always keep this as 0 by default so the first key can be ready
-  output aes_matrix_t data_matrix_out,
+  input update_coming, // new_key is soon to come but not necessarily valid to resync keys up yet (from the key expansion) so use this to prevent a new transaction from starting
+  input new_key, // signifies that, when appropiate, to resync keys up (and that is should be valid to do so)
+  output reg key_taken,
 
   // axi stream read
+  input aes_matrix_t data_matrix_in,
   input read_tvalid,
   input read_tlast,
   output read_tready,
 
   // axi stream write
+  output aes_matrix_t data_matrix_out,
   output write_tvalid,
   output write_tlast,
   input write_tready
@@ -41,6 +42,24 @@ generate
   );
 endgenerate
 
+// transaction is ongoing
+reg transaction;
+always @(posedge clk) begin
+  if (rst)
+    transaction <= 0;
+  else begin
+    if (!transaction && read_tvalid && read_tready)
+      transaction <= 1; // transaction has started
+    if (read_tvalid && read_tlast && read_tready)
+      transaction <= 0; // transaction is finishing
+  end
+end
+
+// refresh local keys
+wire pipeline_fill_up;
+assign pipeline_fill_up = ~transaction & new_key; // don't refresh mid transaction or if there isn't a new key
+
+// counter for refreshing local keys
 reg [3:0] pipeline_startup_counter;
 
 assign key_select = pipeline_startup_counter;
@@ -57,21 +76,26 @@ always @(posedge clk) begin
   if (rst) begin
     pipeline_startup_counter <= 0;
     filling_up <= 0;
+    key_taken <= 0;
   end
   else begin
 
 
     if (pipeline_fill_up || filling_up) begin
+      key_taken <= 1;
+      if (key_taken)
+        key_taken <= 0;
+
       filling_up <= 1;
 
       pipeline_startup_counter <= pipeline_startup_counter + 1;
       round_keys[pipeline_startup_counter] <= key_matrix;
     end
     else
-      pipeline_startup_counter <= 1;
+      pipeline_startup_counter <= 0;
 
     if (pipeline_startup_counter == 10) begin // keys should be finished writing
-      pipeline_startup_counter <= 1;
+      pipeline_startup_counter <= 0;
       filling_up <= 0;
     end
   end
@@ -92,7 +116,7 @@ assign write_tlast = parallel_status_pipeline[$size(parallel_status_pipeline) - 
 assign write_tvalid = parallel_status_pipeline[$size(parallel_status_pipeline) - 1].valid;
 
 wire stall;
-assign stall = ~write_tready;
+assign stall = (~write_tready & write_tvalid) | (update_coming & ~transaction) | ((pipeline_fill_up | filling_up) & pipeline_startup_counter == 0);
 assign read_tready = ~stall;
 
 
