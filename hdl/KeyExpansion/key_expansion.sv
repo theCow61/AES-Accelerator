@@ -53,8 +53,11 @@ endfunction
 reg key_taken;
 assign key_consumed = key_taken;
 
+aes_matrix_t current_key;
+
 always @(posedge clk) begin
   if (rst) begin
+    current_key <= 0;
     key_taken <= 0;
     round_counter_previous <= 0;
     round_counter <= 1;
@@ -68,6 +71,7 @@ always @(posedge clk) begin
         if (start_key_expansion) begin
           // don't hardwire expanded_keys[0] to the key as the key may change
           // later on (for a different aes operation)
+          current_key <= key;
           expanded_keys[0] <= key;
           state <= ROUND_KEY_GENERATION;
           round_counter_previous <= 0;
@@ -76,8 +80,15 @@ always @(posedge clk) begin
         end
       end
       ROUND_KEY_GENERATION: begin
-        expanded_keys[round_counter] <= expand_key(expanded_keys[round_counter_previous], round_counter_previous);
-
+        // the synthesizer doesn't know that round_counter should ALWAYS be +1 ahead of round_counter_previous which seems to make a lot more logic
+        // then necessary
+        //expanded_keys[round_counter] <= expand_key(expanded_keys[round_counter_previous], round_counter_previous);
+        
+        // use this instead to avoid above issue. -4 ns slack caused by the above went away with this
+        expanded_keys[round_counter] <= expand_key(current_key, round_counter_previous);
+        current_key <= expand_key(current_key, round_counter_previous);
+        
+        
         // don't let this be an adder. use two counters if needed
         round_counter_previous <= round_counter_previous + 1;
         round_counter <= round_counter + 1;
