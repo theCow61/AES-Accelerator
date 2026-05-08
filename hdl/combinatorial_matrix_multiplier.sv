@@ -45,24 +45,24 @@ assign product_matrix[2][0] = row_1_mac(matrix_in[2]);
 assign product_matrix[3][0] = row_1_mac(matrix_in[3]);
 
 // second row
-assign product_matrix[0][1] = row_1_mac(matrix_in[0]);
-assign product_matrix[1][1] = row_1_mac(matrix_in[1]);
-assign product_matrix[2][1] = row_1_mac(matrix_in[2]);
-assign product_matrix[3][1] = row_1_mac(matrix_in[3]);
+assign product_matrix[0][1] = row_2_mac(matrix_in[0]);
+assign product_matrix[1][1] = row_2_mac(matrix_in[1]);
+assign product_matrix[2][1] = row_2_mac(matrix_in[2]);
+assign product_matrix[3][1] = row_2_mac(matrix_in[3]);
 
 
 // third row
-assign product_matrix[0][2] = row_1_mac(matrix_in[0]);
-assign product_matrix[1][2] = row_1_mac(matrix_in[1]);
-assign product_matrix[2][2] = row_1_mac(matrix_in[2]);
-assign product_matrix[3][2] = row_1_mac(matrix_in[3]);
+assign product_matrix[0][2] = row_3_mac(matrix_in[0]);
+assign product_matrix[1][2] = row_3_mac(matrix_in[1]);
+assign product_matrix[2][2] = row_3_mac(matrix_in[2]);
+assign product_matrix[3][2] = row_3_mac(matrix_in[3]);
 
 
 // fourth row
-assign product_matrix[0][3] = row_1_mac(matrix_in[0]);
-assign product_matrix[1][3] = row_1_mac(matrix_in[1]);
-assign product_matrix[2][3] = row_1_mac(matrix_in[2]);
-assign product_matrix[3][3] = row_1_mac(matrix_in[3]);
+assign product_matrix[0][3] = row_4_mac(matrix_in[0]);
+assign product_matrix[1][3] = row_4_mac(matrix_in[1]);
+assign product_matrix[2][3] = row_4_mac(matrix_in[2]);
+assign product_matrix[3][3] = row_4_mac(matrix_in[3]);
 
 
 endmodule
