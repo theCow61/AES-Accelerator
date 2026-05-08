@@ -48,6 +48,12 @@ aes_matrix_t cipher_casted;
 
 initial begin
   rst = 1;
+  key = 0;
+  key_write = 0;
+  dut_read_tdata = 0;
+  dut_read_tvalid = 0;
+  dut_read_tlast = 0;
+  dut_write_tready = 1;
   #33; // a little offset to reduce ambiguity in waveforms
   rst = 0;
   #10;
@@ -59,6 +65,36 @@ initial begin
   key_casted = { << byte {key_read}};
   text_casted = { << byte {text_read}};
   cipher_casted = { << byte {cipher_read}};
+  
+  key = key_casted;
+  #0;
+  key_write = 1;
+  #10;
+  key_write = 0;
+  #20;
+  dut_read_tdata = text_casted;
+  dut_read_tvalid = 1;
+  dut_read_tlast = 1;
+  #10;
+  dut_read_tvalid = 0;
+  dut_read_tlast = 0;
+  dut_read_tdata = 0;
+  #10;
+  
+  while (!dut_write_tvalid) #10;
+  
+  if (!dut_write_tlast)
+    $display("Fail: not last"); // only one block so should be last
+   
+  if (dut_write_tdata == cipher_casted)
+    $display("Success");
+  else
+    $display("Fail");
+  
+  #20;
+  
+  $finish();
+  
 
 
 end
