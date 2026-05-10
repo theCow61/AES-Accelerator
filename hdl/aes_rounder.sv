@@ -148,7 +148,7 @@ always @(posedge clk) begin
       in_states[7] <= out_states[6];
       in_states[8] <= out_states[7];
       in_states[9] <= out_states[8];
-      data_matrix_out <= out_states[9];
+      data_matrix_out <= out_states[9]; // maybe don't pipeline output of last; it has less logic than the other anyways
 
     end
   end
