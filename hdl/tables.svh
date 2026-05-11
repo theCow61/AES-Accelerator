@@ -1,6 +1,8 @@
 `ifndef TYPES_AND_TABLES
 `define TYPES_AND_TABLES
 
+`define USE_ROM_INTRINSICS
+
 // treat as column-major [col, row]
 typedef logic [3:0][3:0][7:0] aes_matrix_t;
 

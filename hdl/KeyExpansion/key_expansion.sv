@@ -25,23 +25,32 @@ aes_matrix_t expanded_keys [11];
 
 reg [3:0] round_counter_previous;
 reg [3:0] round_counter; // so to not use an adder
+reg [7:0] round_constant;
 
 // combinatorial. maybe have registers to reduce delay
+// part of critical path. using a non combinatorial port read
+// may require us to have an extra cycle where the key expansion is ahead of the rounder.
+// considering that the timing of this critical path is similiar to that of the next most
+// critical paths, fixing this with adding a potential extra cycle of latency while just
+// having a different, but almost same delay, critical path doesn't seem worth it
 assign round_key = expanded_keys[round];
 
-typedef enum logic [1:0] {
-  IDLE,
-  ROUND_KEY_GENERATION
-} key_expansion_state_t;
 
-key_expansion_state_t state;
+wire [7:0] expansion_sbox_0_data;
+wire [7:0] expansion_sbox_1_data;
+wire [7:0] expansion_sbox_2_data;
+wire [7:0] expansion_sbox_3_data;
 
-function automatic logic [31:0] g_of_column(input logic [31:0] column, input logic [3:0] g_round);
-  return { S_BOX_TABLE[column[7:0]], S_BOX_TABLE[column[31:24]], S_BOX_TABLE[column[23:16]], S_BOX_TABLE[column[15:8]] ^ ROUND_G_CONSTANTS[g_round] };
+
+function automatic logic [31:0] g_of_column(/*input logic [31:0] column, */input logic [3:0] g_round);
+  //return { S_BOX_TABLE[column[7:0]], S_BOX_TABLE[column[31:24]], S_BOX_TABLE[column[23:16]], S_BOX_TABLE[column[15:8]] ^ ROUND_G_CONSTANTS[g_round] };
+  //return { expansion_sbox_0_data, expansion_sbox_3_data, expansion_sbox_2_data, expansion_sbox_1_data ^ ROUND_G_CONSTANTS[g_round] };
+  return { expansion_sbox_0_data, expansion_sbox_3_data, expansion_sbox_2_data, expansion_sbox_1_data ^ round_constant };
 endfunction
 
 function automatic aes_matrix_t expand_key(input aes_matrix_t previous, input logic [3:0] g_round);
-  logic [31:0] g_last_column = g_of_column(previous[3], g_round);
+  //logic [31:0] g_last_column = g_of_column(previous[3], g_round);
+  logic [31:0] g_last_column = g_of_column(g_round);
 
   // maybe pipeline this
   logic [31:0] new_column_1 = previous[0] ^ g_last_column;
@@ -52,10 +61,21 @@ function automatic aes_matrix_t expand_key(input aes_matrix_t previous, input lo
   return { new_column_4, new_column_3, new_column_2, new_column_1 };
 endfunction
 
+typedef enum logic [1:0] {
+  IDLE,
+  ROUND_KEY_GENERATION
+} key_expansion_state_t;
+
+key_expansion_state_t state;
 
 assign key_consumed = pending_key & ~(rounder_syncing & transaction_ongoing);
 
 aes_matrix_t previous_key;
+
+lookup_table_256x8 #( .lookup_data (S_BOX_TABLE)) expansion_sbox_1 (.addr (previous_key[3][1]), .data (expansion_sbox_1_data));
+lookup_table_256x8 #( .lookup_data (S_BOX_TABLE)) expansion_sbox_2 (.addr (previous_key[3][2]), .data (expansion_sbox_2_data));
+lookup_table_256x8 #( .lookup_data (S_BOX_TABLE)) expansion_sbox_3 (.addr (previous_key[3][3]), .data (expansion_sbox_3_data));
+lookup_table_256x8 #( .lookup_data (S_BOX_TABLE)) expansion_sbox_0 (.addr (previous_key[3][0]), .data (expansion_sbox_0_data));
 
 always @(posedge clk) begin
   if (rst) begin
@@ -76,6 +96,7 @@ always @(posedge clk) begin
           state <= ROUND_KEY_GENERATION;
           round_counter_previous <= 0;
           round_counter <= 1;
+          round_constant <= ROUND_G_CONSTANTS[0];
         end
       end
       ROUND_KEY_GENERATION: begin
@@ -86,6 +107,7 @@ always @(posedge clk) begin
         // use this instead to avoid above issue. -4 ns slack caused by the above went away with this
         expanded_keys[round_counter] <= expand_key(previous_key, round_counter_previous);
         previous_key <= expand_key(previous_key, round_counter_previous);
+        round_constant <= ROUND_G_CONSTANTS[round_counter];
         
         
         // don't let this be an adder. use two counters if needed
@@ -104,6 +126,7 @@ always @(posedge clk) begin
             expanded_keys[0] <= key;
             round_counter <= 1;
             round_counter_previous <= 0;
+            round_constant <= ROUND_G_CONSTANTS[0];
         end
       end
     endcase
