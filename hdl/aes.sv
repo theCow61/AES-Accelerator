@@ -17,28 +17,30 @@ module aes (
   input write_tready
 );
 
-wire key_expansion_key_consumed;
+
 
 wire [3:0] key_select;
 wire [127:0] selected_key;
 
-wire key_expansion_start;
-wire rounder_new_key;
-wire rounder_key_taken;
-wire rounder_update_coming;
-
 // needs to be cleared once update is registered
 reg key_change_pending_key_expansion;
 reg key_change_pending_rounder;
+wire key_expansion_ack;
+wire rounder_key_ack;
+
+wire rounder_refreshing;
+wire transaction_status;
 
 key_expansion keys (
   .clk (clk),
   .rst (rst),
-  .start_key_expansion (key_change_pending_key_expansion),
   .key (aes_key),
-  .key_consumed (key_expansion_key_consumed),
   .round (key_select),
-  .round_key (selected_key)
+  .round_key (selected_key),
+  .pending_key (key_change_pending_key_expansion),
+  .rounder_syncing (rounder_refreshing),
+  .transaction_ongoing(transaction_status),
+  .key_consumed (key_expansion_ack)
 );
 
 aes_rounder rounder_1 (
@@ -46,9 +48,10 @@ aes_rounder rounder_1 (
   .rst (rst),
   .key_matrix (selected_key),
   .key_select (key_select),
-  .update_coming (rounder_update_coming),
   .new_key (key_change_pending_rounder),
-  .key_taken (rounder_key_taken),
+  .key_syncing (rounder_refreshing),
+  .key_ack (rounder_key_ack),
+  .transaction_status (transaction_status),
   .data_matrix_in (read_tdata),
   .read_tvalid (read_tvalid),
   .read_tlast (read_tlast),
@@ -60,7 +63,6 @@ aes_rounder rounder_1 (
 );
 
 
-assign rounder_update_coming = key_change_pending_key_expansion; // having key expander have a ready signal may be a better way of expressing a lot of this stuff
 
 always @(posedge clk) begin
   if (rst) begin
@@ -69,17 +71,17 @@ always @(posedge clk) begin
   end
   else begin
 
-    if (rounder_key_taken)
+    if (rounder_key_ack)
       key_change_pending_rounder <= 0;
 
-    if (key_change_pending_key_expansion)
-      key_change_pending_rounder <= 1; // delayed as key expansion needs to be a cycle ahead of the rounder
-
-    if (key_expansion_key_consumed)
+    if (key_expansion_ack)
       key_change_pending_key_expansion <= 0;
+    
 
-    if (aes_key_write)
+    if (aes_key_write) begin
       key_change_pending_key_expansion <= 1;
+      key_change_pending_rounder <= 1;
+    end
 
   end
 end

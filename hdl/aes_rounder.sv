@@ -1,13 +1,23 @@
 `include "tables.svh"
 
+
+// round units have there own corresponding local round key copy that gets filled up sequentially
+// this allows key expansion to occur for new keys while an encryption is ongoing as the current round key values are stored
+// this also prevents needing to have a bunch of large busses going everywhere which may increase routing delay
+// instead we use a single bus from the key expansion unit which can fill up the local buffers simulatanously
+// as we fill up the pipeline (starting an encryption). Key expansion can occur at the same time as the pipeline is filling up
+// except the key expansion has to be ahead by atleast a cycle
+
+
 module aes_rounder (
   input clk,
   input rst,
   input aes_matrix_t key_matrix,
   output [3:0] key_select, // as pipeline fills up, get the keys. This instead of a mess of interconnect. Always keep this as 0 by default so the first key can be ready
-  input update_coming, // new_key is soon to come but not necessarily valid to resync keys up yet (from the key expansion) so use this to prevent a new transaction from starting
-  input new_key, // signifies that, when appropiate, to resync keys up (and that is should be valid to do so)
-  output reg key_taken,
+  input new_key, // new key available but not necessarily valid to resync keys up yet (from the key expansion)
+  output key_syncing,
+  output key_ack,
+  output transaction_status,
 
   // axi stream read
   input aes_matrix_t data_matrix_in,
@@ -42,64 +52,81 @@ generate
   );
 endgenerate
 
-// transaction is ongoing
-reg transaction;
+typedef enum logic {
+    TRANSACTION_IDLE = 0,
+    ONGOING = 1
+} transaction_state_t;
+transaction_state_t transaction_state;
+assign transaction_status = transaction_state == ONGOING;
+// it is not sufficient to just look at tvalid as there may be stalls throughout the transactions from the data source
 always @(posedge clk) begin
-  if (rst)
-    transaction <= 0;
-  else begin
-    if (!transaction && read_tvalid && read_tready)
-      transaction <= 1; // transaction has started
-    if (read_tvalid && read_tlast && read_tready)
-      transaction <= 0; // transaction is finishing
-  end
+    if (rst)
+        transaction_state <= TRANSACTION_IDLE;
+    else begin
+        case (transaction_state)
+            TRANSACTION_IDLE: begin
+                if (read_tvalid)
+                    transaction_state <= ONGOING;
+            end
+            ONGOING: begin
+                // write_tlast and write_tvalid should propogate from read_tlast and read_tvalid
+                if (write_tlast && write_tvalid && write_tready)
+                    transaction_state <= TRANSACTION_IDLE;
+            end
+        endcase
+    end
 end
 
-// refresh local keys
-wire pipeline_fill_up;
-assign pipeline_fill_up = ~transaction & new_key; // don't refresh mid transaction or if there isn't a new key
 
-// counter for refreshing local keys
-reg [3:0] pipeline_startup_counter;
-
-assign key_select = pipeline_startup_counter;
-
-reg filling_up;
-
-// fill up needs to be ahead of rounding
-// instead of having a seperate parallel bus for founding key, just allow
-// the key expansion to be ahead maybe a little more. this extra latency
-// might not matter if we assume the key being set into register and the
-// start of streaming data has a couple cycle inbetween anyways.
-// this may be better than the routing impact of the founding key being routed
+typedef enum logic {
+    IDLE = 0,
+    SYNCING = 1
+} refresh_state_t;
+refresh_state_t refresh_state;
+reg [3:0] key_syncing_counter;
+assign key_select = key_syncing_counter;
+assign key_ack = new_key & (transaction_state == TRANSACTION_IDLE);
+assign key_syncing = refresh_state == SYNCING;
 always @(posedge clk) begin
-  if (rst) begin
-    pipeline_startup_counter <= 0;
-    filling_up <= 0;
-    key_taken <= 0;
-  end
-  else begin
-
-
-    if (pipeline_fill_up || filling_up) begin
-      key_taken <= 1;
-      if (key_taken)
-        key_taken <= 0;
-
-      filling_up <= 1;
-
-      pipeline_startup_counter <= pipeline_startup_counter + 1;
-      round_keys[pipeline_startup_counter] <= key_matrix;
+    if (rst) begin
+        refresh_state <= IDLE;
+        key_syncing_counter <= 0;
     end
-    else
-      pipeline_startup_counter <= 0;
-
-    if (pipeline_startup_counter == 10) begin // keys should be finished writing
-      pipeline_startup_counter <= 0;
-      filling_up <= 0;
+    else begin
+        // new_key refers to when a new key has came but it doesn't mean that it is available to us from the key expansion to use yet
+        // new_key is asserted after the write signal so if there is a new_key and tvalid appears at the same time (while transaction
+        // is low as it hasn't been registered yet), the new
+        // transaction should actually take the new key because the write that caused the new_key predated the tvalid
+        case (refresh_state)
+            IDLE: begin
+                key_syncing_counter <= 0;
+                if (new_key && transaction_state == TRANSACTION_IDLE) begin
+                    refresh_state <= SYNCING;
+                    // don't load first key yet as this needs to be atleast one cycle behind the kex expansion
+                end
+            end
+            SYNCING: begin        
+                key_syncing_counter <= key_syncing_counter + 1;
+                round_keys[key_syncing_counter] <= key_matrix;
+                
+                // finishing key syncing
+                if (key_syncing_counter == 10) begin
+                    key_syncing_counter <= 0;
+                    refresh_state <= IDLE;
+                end
+                
+                // restart. Expect multiple "new_key"s for a single new key considering that
+                // the register writes aren't atomic and a key takes up 4 of our axi registers
+                if (new_key && transaction_state == TRANSACTION_IDLE) begin
+                    refresh_state <= SYNCING;
+                    key_syncing_counter <= 0;
+                end
+            end
+        endcase
     end
-  end
 end
+
+
 
 // tready = we aren't stalling
 // tvalid = check parallel pipeline
@@ -116,7 +143,7 @@ assign write_tlast = parallel_status_pipeline[$size(parallel_status_pipeline) - 
 assign write_tvalid = parallel_status_pipeline[$size(parallel_status_pipeline) - 1].valid;
 
 wire stall;
-assign stall = (~write_tready & write_tvalid) | (update_coming & ~transaction) | ((pipeline_fill_up | filling_up) & pipeline_startup_counter == 0);
+assign stall = (~write_tready & write_tvalid) | (new_key & (transaction_state == TRANSACTION_IDLE)) | ((refresh_state == SYNCING) & key_syncing_counter == 0);
 assign read_tready = ~stall;
 
 

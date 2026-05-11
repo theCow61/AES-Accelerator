@@ -11,11 +11,14 @@
 module key_expansion (
   input clk,
   input rst,
-  input start_key_expansion,
   input aes_matrix_t key,
-  output key_consumed,
   input [3:0] round,
-  output aes_matrix_t round_key
+  output aes_matrix_t round_key,
+  
+  input pending_key,
+  input rounder_syncing,
+  input transaction_ongoing,
+  output key_consumed
 );
 
 aes_matrix_t expanded_keys [11];
@@ -50,33 +53,29 @@ function automatic aes_matrix_t expand_key(input aes_matrix_t previous, input lo
 endfunction
 
 
-reg key_taken;
-assign key_consumed = key_taken;
+assign key_consumed = pending_key & ~(rounder_syncing & transaction_ongoing);
 
-aes_matrix_t current_key;
+aes_matrix_t previous_key;
 
 always @(posedge clk) begin
   if (rst) begin
-    current_key <= 0;
-    key_taken <= 0;
+    previous_key <= 0;
     round_counter_previous <= 0;
     round_counter <= 1;
     state <= IDLE;
   end
   else begin
 
-    key_taken <= 0;
     case (state)
       IDLE: begin
-        if (start_key_expansion) begin
+        if (pending_key && !(rounder_syncing && transaction_ongoing)) begin
           // don't hardwire expanded_keys[0] to the key as the key may change
           // later on (for a different aes operation)
-          current_key <= key;
+          previous_key <= key;
           expanded_keys[0] <= key;
           state <= ROUND_KEY_GENERATION;
           round_counter_previous <= 0;
           round_counter <= 1;
-          key_taken <= 1;
         end
       end
       ROUND_KEY_GENERATION: begin
@@ -85,8 +84,8 @@ always @(posedge clk) begin
         //expanded_keys[round_counter] <= expand_key(expanded_keys[round_counter_previous], round_counter_previous);
         
         // use this instead to avoid above issue. -4 ns slack caused by the above went away with this
-        expanded_keys[round_counter] <= expand_key(current_key, round_counter_previous);
-        current_key <= expand_key(current_key, round_counter_previous);
+        expanded_keys[round_counter] <= expand_key(previous_key, round_counter_previous);
+        previous_key <= expand_key(previous_key, round_counter_previous);
         
         
         // don't let this be an adder. use two counters if needed
@@ -95,6 +94,17 @@ always @(posedge clk) begin
 
         if (round_counter == 10) // all round keys should be generated
           state <= IDLE;
+        
+        if (pending_key && !(rounder_syncing && transaction_ongoing)) begin
+            // be able to restart the process considering that the key register is multiple
+            // words and isn't atomic so there could be a variable amount of writes
+            // that happen to that register which  may trigger the key generation
+            state <= ROUND_KEY_GENERATION;
+            previous_key <= key;
+            expanded_keys[0] <= key;
+            round_counter <= 1;
+            round_counter_previous <= 0;
+        end
       end
     endcase
 
