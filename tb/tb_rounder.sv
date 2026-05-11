@@ -39,12 +39,15 @@ aes DUT (
 );
 
 byte key_read [16];
-byte text_read [16];
-byte cipher_read [16];
+byte text_read [100];
+byte cipher_read [100];
 
 aes_matrix_t key_casted;
 aes_matrix_t text_casted;
 aes_matrix_t cipher_casted;
+
+aes_matrix_t text_inputs [10];
+aes_matrix_t cipher_checks [10];
 
 initial begin
   rst = 1;
@@ -63,8 +66,8 @@ initial begin
   $readmemh("cipher", cipher_read);
   
   key_casted = { << byte {key_read}};
-  text_casted = { << byte {text_read}};
-  cipher_casted = { << byte {cipher_read}};
+  text_casted = { << byte {text_read[0:15]}};
+  cipher_casted = { << byte {cipher_read[0:15]}};
   
   key = key_casted;
   #0;
@@ -92,6 +95,22 @@ initial begin
     $display("Fail");
   
   #20;
+  
+  $finish();
+  
+  text_inputs = '{default: 0};
+  cipher_checks = '{default: 0};
+  $readmemh("key2", key_read);
+  $readmemh("text2", text_read);
+  $readmemh("cipher2", cipher_read);
+  #0;
+  text_inputs = { << byte {text_read} };
+  cipher_checks = { << byte {cipher_read } };
+  key_casted = { << byte {key_read} };
+  #0;
+  
+  #20;
+  
   
   $finish();
   
