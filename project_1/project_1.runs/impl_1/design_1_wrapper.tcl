@@ -122,9 +122,7 @@ start_step write_bitstream
 set ACTIVE_STEP write_bitstream
 set rc [catch {
   create_msg_db write_bitstream.pb
-  set_param tcl.collectionResultDisplayLimit 0
   set_param chipscope.maxJobs 5
-  set_param xicom.use_bs_reader 1
   open_checkpoint design_1_wrapper_routed.dcp
   set_property webtalk.parent_dir C:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.cache/wt [current_project]
 set_property TOP design_1_wrapper [current_fileset]

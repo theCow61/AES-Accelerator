@@ -1,7 +1,7 @@
 //Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-//Date        : Wed May 13 04:08:15 2026
+//Date        : Wed May 13 12:32:21 2026
 //Host        : CO2041-11 running 64-bit major release  (build 9200)
 //Command     : generate_target design_1.bd
 //Design      : design_1
@@ -9,7 +9,7 @@
 //--------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CORE_GENERATION_INFO = "design_1,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=design_1,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=19,numReposBlks=11,numNonXlnxBlks=1,numHierBlks=8,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,da_axi4_cnt=3,da_clkrst_cnt=30,da_ps7_cnt=1,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "design_1.hwdef" *) 
+(* CORE_GENERATION_INFO = "design_1,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=design_1,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=18,numReposBlks=10,numNonXlnxBlks=1,numHierBlks=8,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,da_axi4_cnt=3,da_clkrst_cnt=32,da_ps7_cnt=1,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "design_1.hwdef" *) 
 module design_1
    (DDR_addr,
     DDR_ba,
@@ -83,10 +83,10 @@ module design_1
   wire S00_AXI_2_WREADY;
   wire [7:0]S00_AXI_2_WSTRB;
   wire S00_AXI_2_WVALID;
-  (* CONN_BUS_INFO = "aes_0_write xilinx.com:interface:axis:1.0 None TDATA" *) (* DONT_TOUCH *) wire [127:0]aes_0_write_TDATA;
-  (* CONN_BUS_INFO = "aes_0_write xilinx.com:interface:axis:1.0 None TLAST" *) (* DONT_TOUCH *) wire aes_0_write_TLAST;
-  (* CONN_BUS_INFO = "aes_0_write xilinx.com:interface:axis:1.0 None TREADY" *) (* DONT_TOUCH *) wire aes_0_write_TREADY;
-  (* CONN_BUS_INFO = "aes_0_write xilinx.com:interface:axis:1.0 None TVALID" *) (* DONT_TOUCH *) wire aes_0_write_TVALID;
+  wire [127:0]aes_0_write_TDATA;
+  wire aes_0_write_TLAST;
+  wire aes_0_write_TREADY;
+  wire aes_0_write_TVALID;
   wire [63:0]axi_dma_0_M_AXIS_MM2S_TDATA;
   wire [7:0]axi_dma_0_M_AXIS_MM2S_TKEEP;
   wire axi_dma_0_M_AXIS_MM2S_TLAST;
@@ -130,11 +130,10 @@ module design_1
   wire axis_dwidth_converter_0_M_AXIS_TLAST;
   wire axis_dwidth_converter_0_M_AXIS_TREADY;
   wire axis_dwidth_converter_0_M_AXIS_TVALID;
-  (* CONN_BUS_INFO = "axis_dwidth_converter_1_M_AXIS xilinx.com:interface:axis:1.0 None TDATA" *) (* DONT_TOUCH *) wire [127:0]axis_dwidth_converter_1_M_AXIS_TDATA;
-  (* CONN_BUS_INFO = "axis_dwidth_converter_1_M_AXIS xilinx.com:interface:axis:1.0 None TKEEP" *) (* DONT_TOUCH *) wire [15:0]axis_dwidth_converter_1_M_AXIS_TKEEP;
-  (* CONN_BUS_INFO = "axis_dwidth_converter_1_M_AXIS xilinx.com:interface:axis:1.0 None TLAST" *) (* DONT_TOUCH *) wire axis_dwidth_converter_1_M_AXIS_TLAST;
-  (* CONN_BUS_INFO = "axis_dwidth_converter_1_M_AXIS xilinx.com:interface:axis:1.0 None TREADY" *) (* DONT_TOUCH *) wire axis_dwidth_converter_1_M_AXIS_TREADY;
-  (* CONN_BUS_INFO = "axis_dwidth_converter_1_M_AXIS xilinx.com:interface:axis:1.0 None TVALID" *) (* DONT_TOUCH *) wire axis_dwidth_converter_1_M_AXIS_TVALID;
+  wire [127:0]axis_dwidth_converter_1_M_AXIS_TDATA;
+  wire axis_dwidth_converter_1_M_AXIS_TLAST;
+  wire axis_dwidth_converter_1_M_AXIS_TREADY;
+  wire axis_dwidth_converter_1_M_AXIS_TVALID;
   wire [14:0]processing_system7_0_DDR_ADDR;
   wire [2:0]processing_system7_0_DDR_BA;
   wire processing_system7_0_DDR_CAS_N;
@@ -415,7 +414,6 @@ module design_1
        (.aclk(processing_system7_0_FCLK_CLK0),
         .aresetn(rst_ps7_0_200M_peripheral_aresetn),
         .m_axis_tdata(axis_dwidth_converter_1_M_AXIS_TDATA),
-        .m_axis_tkeep(axis_dwidth_converter_1_M_AXIS_TKEEP),
         .m_axis_tlast(axis_dwidth_converter_1_M_AXIS_TLAST),
         .m_axis_tready(axis_dwidth_converter_1_M_AXIS_TREADY),
         .m_axis_tvalid(axis_dwidth_converter_1_M_AXIS_TVALID),
@@ -646,18 +644,6 @@ module design_1
         .mb_debug_sys_rst(1'b0),
         .peripheral_aresetn(rst_ps7_0_200M_peripheral_aresetn),
         .slowest_sync_clk(processing_system7_0_FCLK_CLK0));
-  design_1_system_ila_0_0 system_ila_0
-       (.SLOT_0_AXIS_tdata(axis_dwidth_converter_1_M_AXIS_TDATA),
-        .SLOT_0_AXIS_tkeep(axis_dwidth_converter_1_M_AXIS_TKEEP),
-        .SLOT_0_AXIS_tlast(axis_dwidth_converter_1_M_AXIS_TLAST),
-        .SLOT_0_AXIS_tready(axis_dwidth_converter_1_M_AXIS_TREADY),
-        .SLOT_0_AXIS_tvalid(axis_dwidth_converter_1_M_AXIS_TVALID),
-        .SLOT_1_AXIS_tdata(aes_0_write_TDATA),
-        .SLOT_1_AXIS_tlast(aes_0_write_TLAST),
-        .SLOT_1_AXIS_tready(aes_0_write_TREADY),
-        .SLOT_1_AXIS_tvalid(aes_0_write_TVALID),
-        .clk(processing_system7_0_FCLK_CLK0),
-        .resetn(rst_ps7_0_200M_peripheral_aresetn));
 endmodule
 
 module design_1_axi_interconnect_0_2
