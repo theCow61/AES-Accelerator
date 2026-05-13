@@ -374,7 +374,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3da0b407</spirit:value>
+            <spirit:value>f6c10d60</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -390,7 +390,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3da0b407</spirit:value>
+            <spirit:value>f6c10d60</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -916,7 +916,7 @@
       <spirit:file>
         <spirit:name>hdl/aes_v1_0.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_9748ef8c</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_8c01bf93</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1042,8 +1042,8 @@
         <xilinx:taxonomy>AXI_Peripheral</xilinx:taxonomy>
       </xilinx:taxonomies>
       <xilinx:displayName>aes_v1.0</xilinx:displayName>
-      <xilinx:coreRevision>5</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-05-13T00:43:48Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>7</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2026-05-13T03:29:03Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@25f6081f_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@54ed4e25_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
@@ -1092,13 +1092,36 @@
         <xilinx:tag xilinx:name="ui.data.coregen.dd@5c0fb7bb_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@65c093ab_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@20a38d8b_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@400e028f_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@57655090_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e9b10ba_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@203444d4_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3b1ad61_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5fd4a9c3_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36c3e523_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e66c1fd_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3275b12c_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@db7e3cb_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@201befa0_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@143cb1f3_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@64be8f6b_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@12ce3e03_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@39504df9_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@19e0b067_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@52f925db_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2fce1fd_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4830b04a_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@49c03f0a_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@598fd8e4_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b387fe9_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@44067d51_ARCHIVE_LOCATION">c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="14743991"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="ed1368d5"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a418ee9d"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a9808fea"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="0cafb623"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="e7b50784"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="213ad8d8"/>
