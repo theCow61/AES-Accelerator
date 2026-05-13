@@ -1,6 +1,8 @@
 
 #include "aes_hw.h"
 #include "xaxidma.h"
+#include "xtime_l.h"
+#include <stdint.h>
 
 static XAxiDma axidma;
 
@@ -52,13 +54,28 @@ void aes_hw_encrypt_nonblocking(aes_block_t* key, aes_block_t* inout, int n_bloc
 }
 
 void aes_hw_encrypt_flushing(aes_block_t* key, aes_block_t* inout, int n_blocks) {
-	Xil_DCacheFlush();
+	Xil_DCacheFlushRange(inout, n_blocks * 16);
 	aes_hw_encrypt(key, inout, n_blocks);
-	Xil_DCacheInvalidate();
+	Xil_DCacheInvalidateRange(inout, n_blocks * 16);
 }
 
 void aes_hw_encrypt_flushing_large(aes_block_t* key, aes_block_t* inout, int n_blocks) {
-	Xil_DCacheFlush();
+	Xil_DCacheFlushRange(inout, n_blocks * 16);
 	aes_hw_encrypt_large(key, inout, n_blocks);
-	Xil_DCacheInvalidate();
+	Xil_DCacheInvalidateRange(inout, n_blocks * 16);
+}
+
+void aes_hw_time_test_encrypt(aes_block_t* key, aes_block_t* inout, int n_blocks, uint64_t* cycles, float* time) {
+	Xil_DCacheFlushRange(inout, n_blocks * 16);
+	XTime start, end;
+
+	XTime_GetTime(&start);
+	aes_hw_encrypt_large(key, inout, n_blocks);
+	XTime_GetTime(&end);
+
+	Xil_DCacheInvalidateRange(inout, n_blocks * 16);
+
+	uint64_t test_cycles = end - start;
+	*time = ((double) test_cycles) / COUNTS_PER_SECOND;
+	*cycles = test_cycles;
 }

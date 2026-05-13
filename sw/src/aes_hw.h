@@ -1,4 +1,4 @@
-
+#include <stdint.h>
 
 typedef struct {
 	unsigned char data[16];
@@ -23,3 +23,9 @@ void aes_hw_encrypt_nonblocking(aes_block_t* key, aes_block_t* inout, int n_bloc
 void aes_hw_encrypt_flushing(aes_block_t* key, aes_block_t* inout, int n_blocks);
 
 void aes_hw_encrypt_flushing_large(aes_block_t* key, aes_block_t* inout, int n_blocks);
+
+/**
+ * Doesn't include cache clearing and invalidating in time benchmark
+ */
+void aes_hw_time_test_encrypt(aes_block_t* key, aes_block_t* inout, int n_blocks, uint64_t* cycles, float* time);
+

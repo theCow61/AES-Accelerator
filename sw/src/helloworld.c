@@ -57,8 +57,9 @@
 #include "xtime_l.h"
 
 
-aes_block_t plaintext[4000000] __attribute__((aligned(32))) = {0};
-aes_block_t cipher[4000000] __attribute__((aligned(32))) = {0};
+aes_block_t plaintext[2000000] __attribute__((aligned(32))) = {0};
+aes_block_t cipher[2000000] __attribute__((aligned(32))) = {0};
+aes_block_t hw_cipher[2000000] __attribute__((aligned(32))) = {0};
 
 
 void print_block(aes_block_t* block) {
@@ -121,13 +122,9 @@ int main()
 
 
     printf("Testing hw encryption\r\n");
-    XTime file_test_hw_start, file_test_hw_stop;
-    XTime_GetTime(&file_test_hw_start);
-    aes_hw_encrypt_flushing_large(file_test_key, plaintext, n_blocks);
-    XTime_GetTime(&file_test_hw_stop);
-
-    uint64_t hw_time_cycles = file_test_hw_stop - file_test_hw_start;
-    float hw_time = ((double) hw_time_cycles) / COUNTS_PER_SECOND;
+    float hw_time;
+    uint64_t hw_time_cycles;
+    aes_hw_time_test_encrypt(file_test_key, plaintext, n_blocks, &hw_time_cycles, &hw_time);
 
     printf("Finished encrypting\r\n");
 
