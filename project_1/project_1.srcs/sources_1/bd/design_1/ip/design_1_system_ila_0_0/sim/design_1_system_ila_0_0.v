@@ -55,8 +55,6 @@
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module design_1_system_ila_0_0 (
   clk,
-  probe0,
-  probe1,
   SLOT_0_AXIS_tdata,
   SLOT_0_AXIS_tkeep,
   SLOT_0_AXIS_tlast,
@@ -72,8 +70,6 @@ module design_1_system_ila_0_0 (
 (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME CLK.clk, FREQ_HZ 142857132, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN design_1_processing_system7_0_0_FCLK_CLK0, ASSOCIATED_BUSIF SLOT_0_AXIS:SLOT_1_AXIS, ASSOCIATED_RESET resetn, INSERT_VIP 0" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 CLK.clk CLK" *)
 input wire clk;
-input wire [127 : 0] probe0;
-input wire [0 : 0] probe1;
 (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 SLOT_0_AXIS TDATA" *)
 input wire [127 : 0] SLOT_0_AXIS_tdata;
 (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 SLOT_0_AXIS TKEEP" *)
@@ -100,8 +96,6 @@ input wire resetn;
 
   bd_f60c inst (
     .clk(clk),
-    .probe0(probe0),
-    .probe1(probe1),
     .SLOT_0_AXIS_tdata(SLOT_0_AXIS_tdata),
     .SLOT_0_AXIS_tkeep(SLOT_0_AXIS_tkeep),
     .SLOT_0_AXIS_tlast(SLOT_0_AXIS_tlast),

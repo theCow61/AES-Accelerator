@@ -9,17 +9,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1015fs"></ZoomStartTime>
-      <ZoomEndTime time="1030fs"></ZoomEndTime>
-      <Cursor1Time time="1019fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="21fs"></ZoomEndTime>
+      <Cursor1Time time="0fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="440"></NameColumnWidth>
-      <ValueColumnWidth column_width="72"></ValueColumnWidth>
+      <ValueColumnWidth column_width="68"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="4" />
-   <wave_markers>
-   </wave_markers>
    <wvobject fp_name="group1" type="group">
       <obj_property name="label">slot_0 : axis_dwidth_converter_1_M_AXIS : Interface</obj_property>
       <obj_property name="DisplayName">label</obj_property>

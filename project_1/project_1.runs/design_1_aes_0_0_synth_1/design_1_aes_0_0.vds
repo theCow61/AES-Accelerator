@@ -1,0 +1,317 @@
+#-----------------------------------------------------------
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Wed May 13 03:18:56 2026
+# Process ID: 21124
+# Current directory: C:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.runs/design_1_aes_0_0_synth_1
+# Command line: vivado.exe -log design_1_aes_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source design_1_aes_0_0.tcl
+# Log file: C:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.runs/design_1_aes_0_0_synth_1/design_1_aes_0_0.vds
+# Journal file: C:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.runs/design_1_aes_0_0_synth_1\vivado.jou
+#-----------------------------------------------------------
+source design_1_aes_0_0.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/zfsalti/488/AES-Accelerator/ip_repo/aes_1.0'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2020.1/data/ip'.
+Command: synth_design -top design_1_aes_0_0 -part xc7z020clg484-1 -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg484-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 16976
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:01 ; elapsed = 00:00:02 . Memory (MB): peak = 993.559 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'design_1_aes_0_0' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_aes_0_0/synth/design_1_aes_0_0.v:56]
+INFO: [Synth 8-6157] synthesizing module 'aes_v1_0' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/hdl/aes_v1_0.v:4]
+	Parameter C_S00_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S00_AXI_ADDR_WIDTH bound to: 6 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'aes_v1_0_S00_AXI' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/hdl/aes_v1_0_S00_AXI.v:4]
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 6 - type: integer 
+	Parameter ADDR_LSB bound to: 2 - type: integer 
+	Parameter OPT_MEM_ADDR_BITS bound to: 3 - type: integer 
+INFO: [Synth 8-226] default block is never used [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/hdl/aes_v1_0_S00_AXI.v:258]
+INFO: [Synth 8-226] default block is never used [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/hdl/aes_v1_0_S00_AXI.v:495]
+INFO: [Synth 8-6155] done synthesizing module 'aes_v1_0_S00_AXI' (1#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/hdl/aes_v1_0_S00_AXI.v:4]
+INFO: [Synth 8-6157] synthesizing module 'aes' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/aes.sv:2]
+INFO: [Synth 8-6157] synthesizing module 'key_expansion' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/key_expansion.sv:11]
+INFO: [Synth 8-6157] synthesizing module 'lookup_table_256x8' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/lookup_table_256x8.sv:23]
+	Parameter lookup_data bound to: 2048'b01100011011111000111011101111011111100100110101101101111110001010011000000000001011001110010101111111110110101111010101101110110110010101000001011001001011111011111101001011001010001111111000010101101110101001010001010101111100111001010010001110010110000001011011111111101100100110010011000110110001111111111011111001100001101001010010111100101111100010111000111011000001100010001010100000100110001110010001111000011000110001001011000000101100110100000011100010010100000001110001011101011001001111011001001110101000010011000001100101100000110100001101101101110010110101010000001010010001110111101011010110011001010011110001100101111100001000101001111010001000000001110110100100000111111001011000101011011011010101100101110111110001110010100101001001100010110001100111111010000111011111010101011111011010000110100110100110011100001010100010111111001000000100111111101010000001111001001111110101000010100011010001101000000100011111001001010011101001110001111010110111100101101101101101000100001000100001111111111110011110100101100110100001100000100111110110001011111100101110100010000010111110001001010011101111110001111010110010001011101000110010111001101100000100000010100111111011100001000100010101010010000100010000100011011101110101110000001010011011110010111100000101111011011111000000011001000111010000010100100100100000110001001000101110011000010110100111010110001100010100100011001010111100100011110011110011111001000001101110110110110001101110101010100111010101001011011000101011011110100111010100110010101111010101011100000100010111010011110000010010100101110000111001010011010110100110001101110100011011101011101000001111101001011101111011000101110001010011100000011111010110101011001100100100000000011111101100000111001100001001101010101011110111001100001101100000100011101100111101110000111111000100110000001000101101001110110011000111010010100100110110001111010000111111010011100111001010101001010001101111110001100101000011000100100001101101111111110011001000010011010000100000110011001001011010000111110110000010101001011101100010110 
+INFO: [Synth 8-6157] synthesizing module 'ROM256X1' [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+	Parameter INIT bound to: 256'b0100111100011110101011010011100101101111001001000111101000000100000100001011110110110010000100001100000000000110111010101011010101101000101010110100101111111010100010101100101101111010000100111011000101001110110111100110011100001001011011000110111011101101 
+INFO: [Synth 8-6155] done synthesizing module 'ROM256X1' (2#1) [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+INFO: [Synth 8-6157] synthesizing module 'ROM256X1__parameterized0' [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+	Parameter INIT bound to: 256'b1100100001110000100101110100000010010100111010101101100010101001011010100100010100001011001011101111001100110100100001101011010011100110000110100100110001011110100101111000000101101111011110100111101110101110000000000111110101001100010100111111110001111101 
+INFO: [Synth 8-6155] done synthesizing module 'ROM256X1__parameterized0' (2#1) [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+INFO: [Synth 8-6157] synthesizing module 'ROM256X1__parameterized1' [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+	Parameter INIT bound to: 256'b1010110000111001101101101100000011010110110011100010111011111100010101110111110101100100111000000011101100001100001111111111101100100011101010000110100110100010101001000010100011000100001001001010000101100011100001111111101100111011010010001011010011000110 
+INFO: [Synth 8-6155] done synthesizing module 'ROM256X1__parameterized1' (2#1) [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+INFO: [Synth 8-6157] synthesizing module 'ROM256X1__parameterized2' [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+	Parameter INIT bound to: 256'b0100111010011101110110110111011011001000100100101111101100011011111010011101101010000100100111001111011010101100011011000001101100100101011010001110101000101110111111111010100001010010011111010001000010010000001000001010001000011001001111010101100001101010 
+INFO: [Synth 8-6155] done synthesizing module 'ROM256X1__parameterized2' (2#1) [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+INFO: [Synth 8-6157] synthesizing module 'ROM256X1__parameterized3' [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+	Parameter INIT bound to: 256'b1111001000010000101000111010111011001110010001110010111001010011001001100010010010110010100001101011110001001000111011001011010011110111111100010111101001001001010011001110001100001111010110001100001010110000111110010111011101010010101110001011000100011110 
+INFO: [Synth 8-6155] done synthesizing module 'ROM256X1__parameterized3' (2#1) [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+INFO: [Synth 8-6157] synthesizing module 'ROM256X1__parameterized4' [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+	Parameter INIT bound to: 256'b0101010010110010010010000001001100001011010011110010010101101111011111011000110111001100010001110000011000110001100111100000100001101011110000101010101001001110000011010111100001111010101001001111100000000100010111110111101101101101100110001101110101111111 
+INFO: [Synth 8-6155] done synthesizing module 'ROM256X1__parameterized4' (2#1) [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+INFO: [Synth 8-6157] synthesizing module 'ROM256X1__parameterized5' [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+	Parameter INIT bound to: 256'b0010000111100000101110000011001100100101010110010001011110000010001111110110101111001011100100011011001100001101101101010101100111100100100001010001101100111011111100111010101100100101011000001001100000001010001111001100001011000010111111011011010011111111 
+INFO: [Synth 8-6155] done synthesizing module 'ROM256X1__parameterized5' (2#1) [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+INFO: [Synth 8-6157] synthesizing module 'ROM256X1__parameterized6' [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+	Parameter INIT bound to: 256'b0101001000110111100111011110011110111000010001001110001111100001010011001011001101110111000000011001011011001010000000110010100111100111101110101100001010001111100001100110101010101100100000100101110010101010001011101100011110111111100101110111000010010000 
+INFO: [Synth 8-6155] done synthesizing module 'ROM256X1__parameterized6' (2#1) [C:/Xilinx/Vivado/2020.1/scripts/rt/data/unisim_comp.v:77756]
+INFO: [Synth 8-6155] done synthesizing module 'lookup_table_256x8' (3#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/lookup_table_256x8.sv:23]
+INFO: [Synth 8-155] case statement is not full and has no default [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/key_expansion.sv:89]
+INFO: [Synth 8-6155] done synthesizing module 'key_expansion' (4#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/key_expansion.sv:11]
+INFO: [Synth 8-6157] synthesizing module 'aes_rounder' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/aes_rounder.sv:12]
+INFO: [Synth 8-6157] synthesizing module 'aes_round_pe' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/aes_round_pe.sv:5]
+	Parameter MIX_COLUMNS bound to: 1 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'combinatorial_matrix_multiplier' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/combinatorial_matrix_multiplier.sv:10]
+INFO: [Synth 8-6155] done synthesizing module 'combinatorial_matrix_multiplier' (5#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/combinatorial_matrix_multiplier.sv:10]
+INFO: [Synth 8-6155] done synthesizing module 'aes_round_pe' (6#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/aes_round_pe.sv:5]
+INFO: [Synth 8-6157] synthesizing module 'aes_round_pe__parameterized0' [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/aes_round_pe.sv:5]
+	Parameter MIX_COLUMNS bound to: 0 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'aes_round_pe__parameterized0' (6#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/aes_round_pe.sv:5]
+INFO: [Synth 8-6155] done synthesizing module 'aes_rounder' (7#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/aes_rounder.sv:12]
+INFO: [Synth 8-6155] done synthesizing module 'aes' (8#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/src/aes.sv:2]
+INFO: [Synth 8-6155] done synthesizing module 'aes_v1_0' (9#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ipshared/93ce/hdl/aes_v1_0.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'design_1_aes_0_0' (10#1) [c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_aes_0_0/synth/design_1_aes_0_0.v:56]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1214.973 ; gain = 221.414
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1214.973 ; gain = 221.414
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1214.973 ; gain = 221.414
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.069 . Memory (MB): peak = 1214.973 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1312 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1271.348 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1312 instances were transformed.
+  ROM256X1 => ROM256X1 (LUT6(x4), MUXF7(x2), MUXF8): 1312 instances
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.159 . Memory (MB): peak = 1271.387 ; gain = 0.039
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg484-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'key_expansion'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    IDLE |                                0 |                               00
+    ROUND_KEY_GENERATION |                                1 |                               01
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'key_expansion'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input    4 Bit       Adders := 2     
++---XORs : 
+	   2 Input    128 Bit         XORs := 11    
+	   2 Input     32 Bit         XORs := 4     
+	   2 Input      8 Bit         XORs := 241   
+	   5 Input      8 Bit         XORs := 40    
+	   3 Input      8 Bit         XORs := 80    
+	   4 Input      8 Bit         XORs := 40    
++---Registers : 
+	               32 Bit    Registers := 17    
+	                8 Bit    Registers := 545   
+	                6 Bit    Registers := 2     
+	                4 Bit    Registers := 2     
+	                2 Bit    Registers := 2     
+	                1 Bit    Registers := 32    
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 16    
+	  16 Input   32 Bit        Muxes := 16    
+	   2 Input    8 Bit        Muxes := 193   
+	  11 Input    8 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 3     
+	   2 Input    1 Bit        Muxes := 41    
+	   3 Input    1 Bit        Muxes := 11    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Static Shift Register Report:
++-----------------+-----------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+|Module Name      | RTL Name                                                        | Length | Width | Reset Signal | Pull out first Reg | Pull out last Reg | SRL16E | SRLC32E | 
++-----------------+-----------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+|design_1_aes_0_0 | inst/aes_unit/rounder_1/parallel_status_pipeline_reg[10][valid] | 11     | 2     | YES          | NO                 | YES               | 2      | 0       | 
++-----------------+-----------------------------------------------------------------+--------+-------+--------------+--------------------+-------------------+--------+---------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |LUT1     |     1|
+|2     |LUT2     |   286|
+|3     |LUT3     |   328|
+|4     |LUT4     |   217|
+|5     |LUT5     |   338|
+|6     |LUT6     |  1560|
+|7     |MUXF7    |    64|
+|8     |MUXF8    |    32|
+|9     |ROM256X1 |  1312|
+|10    |SRL16E   |     2|
+|11    |FDRE     |  4943|
+|12    |FDSE     |     2|
++------+---------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1271.387 ; gain = 277.828
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 0 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:12 ; elapsed = 00:00:18 . Memory (MB): peak = 1271.387 ; gain = 221.414
+Synthesis Optimization Complete : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1271.387 ; gain = 277.828
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.057 . Memory (MB): peak = 1271.387 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1408 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1271.387 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1312 instances were transformed.
+  ROM256X1 => ROM256X1 (LUT6(x4), MUXF7(x2), MUXF8): 1312 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+60 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:24 ; elapsed = 00:00:25 . Memory (MB): peak = 1271.387 ; gain = 277.828
+INFO: [Common 17-1381] The checkpoint 'C:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.runs/design_1_aes_0_0_synth_1/design_1_aes_0_0.dcp' has been generated.
+WARNING: [Common 17-576] 'use_project_ipc' is deprecated. This option is deprecated and no longer used.
+INFO: [Coretcl 2-1648] Added synthesis output to IP cache for IP design_1_aes_0_0, cache-ID = 809c99be9fbb775a
+INFO: [Coretcl 2-1174] Renamed 179 cell refs.
+INFO: [Common 17-1381] The checkpoint 'C:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.runs/design_1_aes_0_0_synth_1/design_1_aes_0_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file design_1_aes_0_0_utilization_synth.rpt -pb design_1_aes_0_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Wed May 13 03:19:28 2026...

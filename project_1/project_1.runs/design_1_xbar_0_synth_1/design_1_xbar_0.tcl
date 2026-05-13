@@ -70,7 +70,8 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "design_1_xbar_0_synth_1" START { ROLLUP_AUTO }
-set_param chipscope.maxJobs 5
+set_param tcl.collectionResultDisplayLimit 0
+set_param xicom.use_bs_reader 1
 set_param project.vivado.isBlockSynthRun true
 set_msg_config -msgmgr_mode ooc_run
 OPTRACE "Creating in-memory project" START { }
@@ -92,7 +93,7 @@ set_property ip_output_repo c:/Users/zfsalti/488/AES-Accelerator/project_1/proje
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
-read_ip -quiet c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_xbar_0/design_1_xbar_0.xci
+read_ip -quiet C:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_xbar_0/design_1_xbar_0.xci
 set_property used_in_implementation false [get_files -all c:/Users/zfsalti/488/AES-Accelerator/project_1/project_1.srcs/sources_1/bd/design_1/ip/design_1_xbar_0/design_1_xbar_0_ooc.xdc]
 
 OPTRACE "Adding files" END { }
