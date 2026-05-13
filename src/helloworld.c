@@ -74,6 +74,7 @@ int main()
 
     aes_hw_init();
 
+
     /*
     // test 1
     char test1_key[16] = "aaa aaa aaa aaaa";
@@ -115,7 +116,7 @@ int main()
 
 
     printf("Testing hw encryption\r\n");
-    aes_hw_encrypt_flushing(file_test_key, plaintext, 2);
+    aes_hw_encrypt_flushing(file_test_key, plaintext, 25);
     printf("Finished encrypting\r\n");
 
     // plaintext and cipher blocks should be same
