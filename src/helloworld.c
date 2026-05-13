@@ -50,20 +50,20 @@
 #include <stdint.h>
 #include "platform.h"
 #include "xil_printf.h"
-#include <xaxidma.h>
 #include "micro-AES/micro_aes.h"
+#include "aes_hw.h"
+#include "xil_cache.h"
+#include "ff.h"
 
-char plaintext[48] __attribute__((aligned(64)));
-char cipher[48] __attribute__((aligned(64)));
 
-typedef struct {
-	unsigned char data[16];
-} aes_block_t;
+aes_block_t plaintext[4000000] __attribute__((aligned(32))) = {0};
+aes_block_t cipher[4000000] __attribute__((aligned(32))) = {0};
 
-//uint8_t raw_file_buffer[65 * 10^6] __attribute__((aligned(8)))= {0};
 
-void aes_encrypt_accelerated(aes_block_t key, aes_block_t* inout, int n_blocks) {
-
+void print_block(aes_block_t* block) {
+	for (int i = 0; i < 4; i++) {
+		printf("%02X %02X %02X %02X\r\n", block->data[0 + i], block->data[4 + i], block->data[8 + i], block->data[12 + i]);
+	}
 }
 
 int main()
@@ -71,56 +71,71 @@ int main()
     init_platform();
 
     print("Hello World\n\r");
-    print("Successfully ran Hello World application");
+
+    aes_hw_init();
+
+    /*
+    // test 1
+    char test1_key[16] = "aaa aaa aaa aaaa";
+    char test1_text[32] __attribute__((aligned(32))) = "hello hellohellohello hellohello";
+
+    Xil_DCacheFlushRange(test1_text, sizeof(test1_text));
+    aes_hw_encrypt(test1_key, test1_text, 2);
+    Xil_DCacheInvalidateRange(test1_text, sizeof(test1_text));
+
+    print_block(test1_text);
+    print_block(test1_text + 16);
+    */
 
 
-    //char aes_plaintext[32] = "hello hellohello otherstufffffff";
-    char aes_plaintext[16] = "hello hellohello";
-    char key[16] = "aaa aaa aaa aaaa";
+    // file test
+    char file_test_key[16] = "protect strawbry";
+    FATFS fs;
+    FIL file;
+    unsigned int bytes_read;
+    if (f_mount(&fs, "0:/", 1) != FR_OK)
+    	printf("Mount error\r\n");
+
+    if (f_open(&file, "0:/strawbry.mp4", FA_READ) != FR_OK)
+    	printf("File open error\r\n");
+
+    FRESULT res;
+    res = f_read(&file, plaintext, sizeof(plaintext), &bytes_read);
+    f_close(&file);
+    f_unmount("0:/");
+    printf("Read result: %d\r\n", res);
+    printf("Bytes: %d\r\n", bytes_read);
+
+    int n_blocks = (bytes_read + 16 - 1) / 16;
+    printf("Blocks: %d\r\n", n_blocks);
+
+    printf("Testing sw encryption\r\n");
+    print_block(&plaintext[0]);
+    AES_ECB_encrypt(file_test_key, plaintext, n_blocks * 16, cipher);
 
 
-    unsigned char result[32];
-    AES_ECB_encrypt(key, aes_plaintext, sizeof(aes_plaintext), result);
-    printf("\r\nResult\r\n");
-    for (int i = 0; i < 32; i++) {
-    	printf("%02x\r\n", result[i]);
+    printf("Testing hw encryption\r\n");
+    aes_hw_encrypt_flushing(file_test_key, plaintext, 2);
+    printf("Finished encrypting\r\n");
+
+    // plaintext and cipher blocks should be same
+
+    print_block(&cipher[0]);
+    print_block(&plaintext[0]);
+
+
+    int matches = 1;
+    for (int i = 0; i < n_blocks * 16; i++) {
+    	if (((unsigned char*)plaintext)[i] != ((unsigned char*)cipher)[i]) {
+    		matches = 0;
+    		printf("Misses match at byte: %d\r\n", i);
+    		break;
+    	}
     }
 
+    printf("Matches: %d\r\n", matches);
 
 
-    volatile unsigned char* key_address = (unsigned char*) (0x43C00000 + 48);
-    *((volatile aes_block_t*) key_address) = *((aes_block_t*) key);
-
-    printf("\r\nKey:\r\n");
-    for (int i = 0; i < 16; i++) {
-    	printf("key byte %02d: %02X\r\n", i, key_address[i]);
-    }
-
-    memcpy(&plaintext[0], aes_plaintext, sizeof(aes_plaintext));
-    memcpy(&plaintext[16], aes_plaintext, sizeof(aes_plaintext));
-    memcpy(&plaintext[32], aes_plaintext, sizeof(aes_plaintext));
-    Xil_DCacheFlush();
-
-    XAxiDma AxiDma;
-
-
-    XAxiDma_Config* dma_conf = XAxiDma_LookupConfig(XPAR_AXIDMA_0_DEVICE_ID);
-    XAxiDma_CfgInitialize(&AxiDma, dma_conf);
-
-    for (int j = 0; j < 1; j++) {
-    XAxiDma_SimpleTransfer(&AxiDma, (unsigned int*) plaintext, sizeof(plaintext), 0);
-
-    XAxiDma_SimpleTransfer(&AxiDma, (unsigned int*) plaintext, sizeof(plaintext), 1);
-
-
-    while (XAxiDma_Busy(&AxiDma, 1));
-    printf("\r\n");
-    for (int i = 0; i < 16*3; i++) {
-    	printf("%02x\r\n", plaintext[i]);
-    }
-    }
-
-    // around 65 kilobytes stack
 
     cleanup_platform();
     return 0;
