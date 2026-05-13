@@ -6,7 +6,7 @@
 
 static XAxiDma axidma;
 
-#define AES_HW_KEY_REG ((volatile aes_block_t*) (0x43C00000 + 4*12))
+#define AES_HW_KEY_REG ((volatile aes_block_t*) (XPAR_AES_0_S00_AXI_BASEADDR + 4*12))
 
 
 void aes_hw_init() {
