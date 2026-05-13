@@ -1,0 +1,64 @@
+
+#include "aes_hw.h"
+#include "xaxidma.h"
+
+static XAxiDma axidma;
+
+#define AES_HW_KEY_REG ((volatile aes_block_t*) (0x43C00000 + 4*12))
+
+
+void aes_hw_init() {
+	*AES_HW_KEY_REG = (aes_block_t) {0};
+	XAxiDma_Config* dma_conf = XAxiDma_LookupConfig(XPAR_AXIDMA_0_DEVICE_ID);
+	XAxiDma_CfgInitialize(&axidma, dma_conf);
+	XAxiDma_Reset(&axidma);
+	while (!XAxiDma_ResetIsDone(&axidma));
+	aes_block_t dummy __attribute__((aligned(8))) = {0};
+	aes_hw_encrypt(&dummy, &dummy, 1);
+}
+
+void aes_hw_encrypt(aes_block_t* key, aes_block_t* inout, int n_blocks) {
+	*AES_HW_KEY_REG = *key;
+	XAxiDma_SimpleTransfer(&axidma, (unsigned int*) inout, n_blocks * 16, XAXIDMA_DMA_TO_DEVICE);
+	XAxiDma_SimpleTransfer(&axidma, (unsigned int*) inout, n_blocks * 16, XAXIDMA_DEVICE_TO_DMA);
+	while (XAxiDma_Busy(&axidma, XAXIDMA_DEVICE_TO_DMA));
+}
+
+void aes_hw_encrypt_large(aes_block_t* key, aes_block_t* inout, int n_blocks) {
+	*AES_HW_KEY_REG = *key;
+	int max_dma_size = (1 << XPAR_AXI_DMA_0_SG_LENGTH_WIDTH) - 1;
+	int bytes_remaining = n_blocks * 16;
+	while (bytes_remaining > 0) {
+		int transfer = bytes_remaining > max_dma_size ? max_dma_size : bytes_remaining;
+		transfer = (transfer / 128) * 128;
+		transfer = transfer == 0 ? 128 : transfer;
+
+		while (XAxiDma_Busy(&axidma, XAXIDMA_DMA_TO_DEVICE));
+		XAxiDma_SimpleTransfer(&axidma, (unsigned int*) inout, transfer, XAXIDMA_DMA_TO_DEVICE);
+
+		while (XAxiDma_Busy(&axidma, XAXIDMA_DEVICE_TO_DMA));
+		XAxiDma_SimpleTransfer(&axidma, (unsigned int*) inout, transfer, XAXIDMA_DEVICE_TO_DMA);
+
+		bytes_remaining -= transfer;
+		inout += (transfer/16);
+	}
+	while (XAxiDma_Busy(&axidma, XAXIDMA_DEVICE_TO_DMA));
+}
+
+void aes_hw_encrypt_nonblocking(aes_block_t* key, aes_block_t* inout, int n_blocks) {
+	*AES_HW_KEY_REG = *key;
+	XAxiDma_SimpleTransfer(&axidma, (unsigned int*) inout, n_blocks * 16, XAXIDMA_DMA_TO_DEVICE);
+	XAxiDma_SimpleTransfer(&axidma, (unsigned int*) inout, n_blocks * 16, XAXIDMA_DEVICE_TO_DMA);
+}
+
+void aes_hw_encrypt_flushing(aes_block_t* key, aes_block_t* inout, int n_blocks) {
+	Xil_DCacheFlush();
+	aes_hw_encrypt(key, inout, n_blocks);
+	Xil_DCacheInvalidate();
+}
+
+void aes_hw_encrypt_flushing_large(aes_block_t* key, aes_block_t* inout, int n_blocks) {
+	Xil_DCacheFlush();
+	aes_hw_encrypt_large(key, inout, n_blocks);
+	Xil_DCacheInvalidate();
+}

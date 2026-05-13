@@ -47,55 +47,106 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #include "platform.h"
 #include "xil_printf.h"
-#include <xaxidma.h>
+#include "micro-AES/micro_aes.h"
+#include "aes_hw.h"
+#include "xil_cache.h"
+#include "ff.h"
+#include "xtime_l.h"
 
-char plaintext[16] __attribute__((aligned(64)));
-char cipher[16] __attribute__((aligned(64)));
 
-typedef struct {
-	unsigned char data[16];
-} aes_block_t;
+aes_block_t plaintext[4000000] __attribute__((aligned(32))) = {0};
+aes_block_t cipher[4000000] __attribute__((aligned(32))) = {0};
+
+
+void print_block(aes_block_t* block) {
+	for (int i = 0; i < 4; i++) {
+		printf("%02X %02X %02X %02X\r\n", block->data[0 + i], block->data[4 + i], block->data[8 + i], block->data[12 + i]);
+	}
+}
 
 int main()
 {
     init_platform();
 
     print("Hello World\n\r");
-    print("Successfully ran Hello World application");
+
+    aes_hw_init();
 
 
-    char aes_plaintext[] = "hello hellohello";
-    char key[] = "aaa aaa aaa aaaa";
-    volatile unsigned char* key_address = (unsigned char*) (0x43C00000 + 12);
-    *((volatile aes_block_t*) key_address) = *((aes_block_t*) key);
+    // test 1
+    char test1_key[16] = "aaa aaa aaa aaaa";
+    char test1_text[32] __attribute__((aligned(32))) = "hello hellohellohello hellohello";
 
-    printf("\r\nKey:\r\n");
-    for (int i = 0; i < 16; i++) {
-    	printf("key byte %02d: %02X\r\n", i, key_address[i]);
+    Xil_DCacheFlushRange(test1_text, sizeof(test1_text));
+    aes_hw_encrypt(test1_key, test1_text, 2);
+    Xil_DCacheInvalidateRange(test1_text, sizeof(test1_text));
+
+    print_block(test1_text);
+    print_block(test1_text + 16);
+
+
+    // file test
+    char file_test_key[16] = "protect strawbry";
+    FATFS fs;
+    FIL file;
+    unsigned int bytes_read;
+    if (f_mount(&fs, "0:/", 1) != FR_OK)
+    	printf("Mount error\r\n");
+
+    if (f_open(&file, "0:/strawbry.mp4", FA_READ) != FR_OK)
+    	printf("File open error\r\n");
+
+    FRESULT res;
+    res = f_read(&file, plaintext, sizeof(plaintext), &bytes_read);
+    f_close(&file);
+    f_unmount("0:/");
+    printf("Read result: %d\r\n", res);
+    printf("Bytes: %d\r\n", bytes_read);
+
+    int n_blocks = (bytes_read + 16 - 1) / 16;
+    printf("Blocks: %d\r\n", n_blocks);
+
+    printf("Testing sw encryption\r\n");
+
+    XTime file_test_sw_start, file_test_sw_stop;
+    XTime_GetTime(&file_test_sw_start);
+    AES_ECB_encrypt(file_test_key, plaintext, n_blocks * 16, cipher);
+    XTime_GetTime(&file_test_sw_stop);
+
+    uint64_t sw_time_cycles = file_test_sw_stop - file_test_sw_start;
+    float sw_time = ((double) sw_time_cycles) / COUNTS_PER_SECOND;
+
+
+    printf("Testing hw encryption\r\n");
+    XTime file_test_hw_start, file_test_hw_stop;
+    XTime_GetTime(&file_test_hw_start);
+    aes_hw_encrypt_flushing_large(file_test_key, plaintext, n_blocks);
+    XTime_GetTime(&file_test_hw_stop);
+
+    uint64_t hw_time_cycles = file_test_hw_stop - file_test_hw_start;
+    float hw_time = ((double) hw_time_cycles) / COUNTS_PER_SECOND;
+
+    printf("Finished encrypting\r\n");
+
+
+    int matches = 1;
+    for (int i = 0; i < n_blocks * 16; i++) {
+    	if (((unsigned char*)plaintext)[i] != ((unsigned char*)cipher)[i]) {
+    		matches = 0;
+    		printf("Misses match at byte: %d\r\n", i);
+    		break;
+    	}
     }
 
-    memcpy(plaintext, aes_plaintext, sizeof(aes_plaintext));
-    Xil_DCacheFlush();
+    printf("Sw and Hw matches: %d\r\n", matches);
+    printf("Sw cycles: %llu\tSw time: %f\t Sw throughput: %f GBps\r\n", sw_time_cycles, sw_time, (((float) bytes_read)/sw_time) / 1000000000.0);
+    printf("Hw cycles: %llu\tHw time: %f\t Hw throughput: %f GBps\r\n", hw_time_cycles, hw_time, ((float) bytes_read)/hw_time / 1000000000.0);
 
-    XAxiDma AxiDma;
+    // cycles * seconds/cycles
 
-
-    XAxiDma_Config* dma_conf = XAxiDma_LookupConfig(XPAR_AXIDMA_0_DEVICE_ID);
-    XAxiDma_CfgInitialize(&AxiDma, dma_conf);
-
-    for (int j = 0; j < 1000000; j++) {
-    XAxiDma_SimpleTransfer(&AxiDma, (unsigned int*) plaintext, sizeof(plaintext), 0);
-
-    XAxiDma_SimpleTransfer(&AxiDma, (unsigned int*) cipher, sizeof(cipher), 1);
-
-    while (XAxiDma_Busy(&AxiDma, 1));
-    printf("\r\n");
-    for (int i = 0; i < 16; i++) {
-    	printf("%02x\r\n", cipher[i]);
-    }
-    }
 
     cleanup_platform();
     return 0;
