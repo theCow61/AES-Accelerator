@@ -32,8 +32,8 @@ void aes_hw_encrypt_large(aes_block_t* key, aes_block_t* inout, int n_blocks) {
 	int bytes_remaining = n_blocks * 16;
 	while (bytes_remaining > 0) {
 		int transfer = bytes_remaining > max_dma_size ? max_dma_size : bytes_remaining;
-		transfer = (transfer / 128) * 128;
-		transfer = transfer == 0 ? 128 : transfer;
+		transfer = (transfer / 16) * 16;
+		transfer = transfer == 0 ? 16 : transfer;
 
 		while (XAxiDma_Busy(&axidma, XAXIDMA_DMA_TO_DEVICE));
 		XAxiDma_SimpleTransfer(&axidma, (unsigned int*) inout, transfer, XAXIDMA_DMA_TO_DEVICE);
